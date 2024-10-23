@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../models/Usermodel");
 
 // register
 const register = async (req, res) => {
@@ -27,31 +27,30 @@ const register = async (req, res) => {
     res.status(500).send("Error registering user");
   }
 };
+
 // login
 const login = async (req, res) => {
-    // 從請求取得 username 和 password
-    const { username,password } = req.body;
+  const { username, password } = req.body;
 
-    try {
-        // 找尋 User
-        const = user = await User.findOne({ username });
-        if (!user) {
-            return res.status(400).send('User not found');
-        }
-
-        // 比對密碼
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            return res.status(400).send('Invalid password');
-        }
-
-        // 產生 JWT token
-        const token = jwt.sign({ username: user.username }, 'jwtSecret', { expiresIn: '1h' });
-        res.json({ token });
-    } catch (err) {
-        res.status(500).send('Error logging in');
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).send("User not found");
     }
 
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(400).send("Invalid password");
+    }
+
+    const token = jwt.sign({ username: user.username }, "jwtSecret", { expiresIn: "1h" });
+    res.json({ token });
+  } catch (err) {
+    res.status(500).send("Error logging in");
+  }
 };
 
-module.exports = { register, login };
+module.exports = {
+  register,
+  login,
+};
