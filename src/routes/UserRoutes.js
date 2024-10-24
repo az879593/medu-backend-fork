@@ -1,13 +1,20 @@
-const express = require("express");
-const userController = require("../controllers/UserController"); 
+// routes/UserRoutes.js
 
+const express = require('express');
 const router = express.Router();
+const UserController = require('../controllers/UserController');
+const auth = require('../middlewares/AuthenticationMiddleware');
 
 // register route
-router.post("/register", userController.register);
+router.post('/register', UserController.register);
 
 // login route
-router.post("/login", userController.login);
+router.post('/login', UserController.login);
 
-// 導出 module router
+// Use JWT profile
+// It can improve in the UserController.js
+router.get('/profile', auth, (req, res) => {
+  res.json({ message: 'Is proct', userId: req.user.userId });
+});
+
 module.exports = router;
