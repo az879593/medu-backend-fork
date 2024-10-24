@@ -1,12 +1,37 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-
-// required: true 表示此欄位是必填的
-// unique: true 表示這個欄位的值必須在資料庫中是唯一的，不能重複
-const userSchema = new mongoose.Schema({
-    username: { type: string, required: true, unique: true },
-    password: { type: string, required: true }
+const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 30,
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+  },
 });
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+// Before save user, hash password
+UserSchema.pre('save', async function (next) {
+  try {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// compare password
+UserSchema.methods.comparePassword = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+module.exports = mongoose.model('User', UserSchema);
