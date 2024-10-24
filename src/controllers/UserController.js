@@ -1,56 +1,44 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const User = require("../models/Usermodel");
+const User = require('../models/UserModel');
+const jwt = require('jsonwebtoken');
 
 // register
-const register = async (req, res) => {
-  const { username, password } = req.body;
-
+exports.register = async (req, res) => {
   try {
-    // check if user already exists
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    const { username, password } = req.body;
+    // check user exists
+    let user = await User.findOne({ username });
+    if (user) {
+      return res.status(400).json({ message: 'User is existed' });
     }
-
-    // hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // save new user
-    const newUser = new User({ username, password: hashedPassword });
-    await newUser.save();
-
-    // send response
-    res.status(201).send("User registered");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error registering user");
+    // create user
+    user = new User({ username, password });
+    await user.save();
+    res.status(201).json({ message: 'register success' });
+  } catch (error) {
+    res.status(500).json({ message: 'server error' });
   }
 };
 
 // login
-const login = async (req, res) => {
-  const { username, password } = req.body;
-
+exports.login = async (req, res) => {
   try {
+    const { username, password } = req.body;
+    // check user exists
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).send("User not found");
+      return res.status(400).json({ message: 'User or password is not correct' });
     }
-
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-      return res.status(400).send("Invalid password");
+    // check password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'User or password is not correct' });
     }
-
-    const token = jwt.sign({ username: user.username }, "jwtSecret", { expiresIn: "1h" });
+    // Gen JWT
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+      expiresIn: '1h', // 1 hour expires
+    });
     res.json({ token });
-  } catch (err) {
-    res.status(500).send("Error logging in");
+  } catch (error) {
+    res.status(500).json({ message: 'server error' });
   }
-};
-
-module.exports = {
-  register,
-  login,
 };
