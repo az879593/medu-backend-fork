@@ -3,7 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const UserRoutes = require('./routes/UserRoutes');
+
+const indexRoutes = require('./routes/indexRoutes');
+const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -35,7 +37,8 @@ mongoose.connect(uri)
   .catch(err => console.error('fail connected to MongoDB', err));
 
 // 使用 UserRoutes
-app.use('/api/users', UserRoutes);
+app.use('/', indexRoutes);
+app.use('/api', apiRoutes);
 
 // start server in env.PORT or 3000
 const PORT = process.env.PORT || 3000;
