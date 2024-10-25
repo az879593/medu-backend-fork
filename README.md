@@ -5,7 +5,7 @@ NCCU Cloud Native Project Medu Backend
 
 ### 1. 註冊新用戶
 
-**POST** `/api/users/register`
+**POST** `/api/user/register`
 
 **請求 Body:**
 ```json
@@ -24,7 +24,7 @@ NCCU Cloud Native Project Medu Backend
 
 ### 2. 用戶登錄
 
-**POST** `/api/users/login`
+**POST** `/api/user/login`
 
 **請求 Body:**
 ```json
@@ -43,7 +43,7 @@ NCCU Cloud Native Project Medu Backend
 
 ### 3. 訪問 User Profile
 
-**GET** `/api/users/profile`
+**GET** `/api/user/profile`
 
 **請求 header:**
 ```json
