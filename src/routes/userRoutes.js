@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const auth = require('../middlewares/AuthenticationMiddleware');
+const auth = require('../middlewares/authenticationMiddleware');
 
 // register route
 router.post('/register', userController.register);
@@ -14,7 +14,7 @@ router.post('/login', userController.login);
 // Use JWT profile
 // It can improve in the UserController.js
 router.get('/profile', auth, (req, res) => {
-  res.json({ message: 'Is protected token', userId: req.user.userId });
+    res.json({ message: 'Is protected token', userId: req.user.userId });
 });
 
 module.exports = router;
