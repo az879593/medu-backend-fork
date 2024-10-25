@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 
 const indexRoutes = require('./routes/indexRoutes');
 const apiRoutes = require('./routes/apiRoutes');
-const UserRoutes = require('./routes/userRoutes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -40,7 +39,6 @@ mongoose.connect(uri)
 // 使用 UserRoutes
 app.use('/', indexRoutes);
 app.use('/api', apiRoutes);
-app.use('/api/users', UserRoutes);
 
 // start server in env.PORT or 3000
 const PORT = process.env.PORT || 3000;
