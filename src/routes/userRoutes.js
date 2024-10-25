@@ -2,14 +2,14 @@
 
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/UserController');
+const userController = require('../controllers/userController');
 const auth = require('../middlewares/AuthenticationMiddleware');
 
 // register route
-router.post('/register', UserController.register);
+router.post('/register', userController.register);
 
 // login route
-router.post('/login', UserController.login);
+router.post('/login', userController.login);
 
 // Use JWT profile
 // It can improve in the UserController.js
