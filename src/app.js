@@ -38,8 +38,5 @@ mongoose
 app.use('/', indexRoutes);
 app.use('/api', apiRoutes);
 
-// start server in env.PORT or 3000
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`server is running ${PORT}`);
-});
+// Start server in server.js
+module.exports = app;

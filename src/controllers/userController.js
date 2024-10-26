@@ -5,14 +5,24 @@ const jwt = require('jsonwebtoken');
 exports.register = async (req, res) => {
     try {
         const { username, password } = req.body;
+
+        // cheack username or password is empty
+        if (!username?.trim() || !password?.trim()) {
+            return res
+                .status(400)
+                .json({ message: 'required username or password' });
+        }
+
         // check user exists
         let user = await User.findOne({ username });
         if (user) {
             return res.status(400).json({ message: 'User is existed' });
         }
+
         // create user
         user = new User({ username, password });
         await user.save();
+
         res.status(201).json({ message: 'register success' });
     } catch (error) {
         res.status(500).json({ message: 'server error' });
