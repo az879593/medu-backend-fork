@@ -21,7 +21,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    await mongoose.connection.db.dropDatabase();
+    await User.collection.drop();
+    await mongoose.connection.close();
 });
 
 describe('User Login Test', () => {

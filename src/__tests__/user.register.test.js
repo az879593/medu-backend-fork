@@ -15,7 +15,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
     // clear mongoDB
-    await mongoose.connection.db.dropDatabase();
+    await User.collection.drop();
+    await mongoose.connection.close();
 });
 
 describe('User Register Test', () => {
