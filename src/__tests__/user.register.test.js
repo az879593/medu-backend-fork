@@ -1,6 +1,5 @@
 require('dotenv').config({ path: __dirname + '/../.env' });
 
-
 const request = require('supertest');
 const app = require('../app');
 const mongoose = require('mongoose');
@@ -17,26 +16,30 @@ beforeAll(async () => {
 afterAll(async () => {
     // clear mongoDB
     await mongoose.connection.db.dropDatabase();
-    await mongoose.connection.close();
-    console.log("Database connection closed");
 });
 
 describe('User Register Test', () => {
-    // register success
-    test('Success user register', async () => {
-        const response = await request(app).post('/api/user/register').send({
-            username: 'Lean0411',
-            password: '910411',
-        });
-        expect(response.status).toBe(201);
-        expect(response.body.message).toBe('register success');
+    const username = 'Lean0411';
+    const password = '910411';
 
+    // Test case for successful user registration
+    test('Success user register', async () => {
+        // Step 1: Register a new user
+        const registerResponse = await request(app).post('/api/user/register').send({
+            username,
+            password,
+        });
+
+        expect(registerResponse.status).toBe(201);
+
+        // Step 2: Check if the user is actually in the database
+        const user = await User.findOne({ username });
+        expect(user).not.toBeNull();
+        expect(user.username).toBe(username);
     });
 
     // register exiested
     test('User existed', async () => {
-        // create a user first
-        await new User({ username: 'Lean0411', password: '910411' }).save();
 
         const response = await request(app).post('/api/user/register').send({
             username: 'Lean0411',
@@ -46,7 +49,7 @@ describe('User Register Test', () => {
         expect(response.body.message).toBe('User is existed');
     });
 
-    // required username or password 
+    // required username or password
     test('Required username or password register', async () => {
         const response = await request(app)
             .post('/api/user/register')
