@@ -12,7 +12,7 @@ beforeAll(async () => {
     });
 
     // clear users set
-    await User.deleteMany({});
+    await User.collection.drop();
     
     await new User({
         username: 'testuser',
@@ -22,7 +22,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
-    await mongoose.connection.close();
 });
 
 describe('User Login Test', () => {
