@@ -20,6 +20,12 @@ module.exports = (req, res, next) => {
         return res.status(401).json({ message: 'Token format is incorrect' });
     }
 
+    // Check if SECRET_KEY is defined
+    if (!process.env.SECRET_KEY) {
+        console.error('Server error: SECRET_KEY not set');
+        return res.status(500).json({ message: 'Server error' });
+    }
+
     try {
         // Testing the token and secret key
         console.log('Received token:', token);
@@ -32,10 +38,21 @@ module.exports = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         console.log('Decoded token:', decoded);
 
+        // Check if userId exists in token payload
+        if (!decoded.userId) {
+            console.log('Invalid token payload: userId missing');
+            return res.status(401).json({ message: 'Invalid token payload' });
+        }
+
         req.user = decoded;
         next();
     } catch (error) {
-        console.error('JWT verification error:', error);
-        res.status(401).json({ message: 'Invalid token' });
+        if (error.name === 'TokenExpiredError') {
+            console.error('JWT verification error: Token expired');
+            return res.status(401).json({ message: 'Token expired' });
+        } else {
+            console.error('JWT verification error:', error);
+            return res.status(401).json({ message: 'Invalid token' });
+        }
     }
 };
