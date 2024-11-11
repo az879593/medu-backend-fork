@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
             type: String,
             // required: true,
             unique: true,
-            trim: true,
+            // trim: true,
             minlength: 3,
             maxlength: 30,
         },
@@ -19,6 +19,11 @@ const UserSchema = new mongoose.Schema({
             type: String,
             // required: true,
             enum: ['male', 'female'],
+        },
+        bio: {
+            type: String,
+            // required: true,
+            maxlength: 10000,
         },
     },
     username: {
