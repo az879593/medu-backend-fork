@@ -34,11 +34,11 @@ describe('User Login Test', () => {
         // 創建用戶時提供所有必要欄位
         await new User({
             profile: {
-                username: 'testuser',
                 nickname: 'Test Nickname',
                 birthDate: '1990-01-01',
                 gender: 'male',
             },
+            username: 'testuser',
             password: 'password123',
         }).save();
 
@@ -57,11 +57,11 @@ describe('User Login Test', () => {
         // 創建用戶時提供所有必要欄位
         await new User({
             profile: {
-                username: 'testuser',
                 nickname: 'Test Nickname',
                 birthDate: '1990-01-01',
                 gender: 'male',
             },
+            username: 'testuser',
             password: 'password123',
         }).save();
 

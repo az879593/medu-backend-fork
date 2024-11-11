@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
         }
 
         // 檢查用戶是否已存在
-        let user = await User.findOne({ 'profile.username': username });
+        let user = await User.findOne({ 'username': username });
         if (user) {
             return res.status(400).json({ message: 'User is existed' });
         }
@@ -23,11 +23,11 @@ exports.register = async (req, res) => {
         // 創建新用戶
         user = new User({
             profile: {
-                username,
                 nickname,
                 birthDate,
                 gender,
             },
+            username,
             password,
         });
         await user.save();
@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
                     message += '請提供有效的生日';
                 } else if (error.errors[field].path === 'profile.gender') {
                     message += '請提供有效的性別';
-                } else if (error.errors[field].path === 'profile.username') {
+                } else if (error.errors[field].path === 'username') {
                     message += '請提供有效的用戶名';
                 } else if (error.errors[field].path === 'profile.nickname') {
                     message += '請提供有效的暱稱';
@@ -71,7 +71,7 @@ exports.login = async (req, res) => {
         }
 
         // 檢查用戶是否存在
-        const user = await User.findOne({ 'profile.username': username });
+        const user = await User.findOne({ 'username': username });
         if (!user) {
             return res.status(400).json({ message: '用戶不存在' });
         }
