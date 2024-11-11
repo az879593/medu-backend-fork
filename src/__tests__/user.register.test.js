@@ -48,7 +48,7 @@ describe('User Registration', () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.message).toBe('register success');
 
-        const user = await User.findOne({ 'profile.username': 'testuser' });
+        const user = await User.findOne({ 'username': 'testuser' });
         expect(user).not.toBeNull();
         expect(user.profile.nickname).toBe('Test Nickname');
     });
@@ -57,11 +57,11 @@ describe('User Registration', () => {
         // 創建用戶
         await new User({
             profile: {
-                username: 'testuser',
                 nickname: 'Test Nickname',
                 birthDate: '1990-01-01',
                 gender: 'male',
             },
+            username: 'testuser',
             password: 'password123',
         }).save();
 
@@ -138,7 +138,7 @@ describe('User Registration', () => {
 
         expect(res.statusCode).toBe(201);
 
-        const user = await User.findOne({ 'profile.username': 'testuser' });
+        const user = await User.findOne({ 'username': 'testuser' });
         expect(user).not.toBeNull();
         const isMatch = await bcrypt.compare('password123', user.password);
         expect(isMatch).toBe(true);
