@@ -30,6 +30,6 @@ exports.login = async (req, res) => {
             return res.status(error.statusCode).json({ message: error.message.trim() });
         }
         // console.error(error); // 方便調試
-        res.status(500).json({ message: '伺服器錯誤' });
+        res.status(500).json({ message: error.message.trim() });
     }
 };
