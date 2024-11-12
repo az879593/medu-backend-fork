@@ -46,13 +46,12 @@ exports.register = async (userData) => {
                         errorMessage += '請提供有效的生日';
                         break;
                     default:
-                        errorMessage += error.errors[field].message + ' ';
+                        errorMessage += error.errors[field].message;
                 }
             }
             throw new APIError(400, errorMessage);
         }
         throw new Error('Error createUser : ' + error.message);
-        // throw new Error('Error createUser : ' + error.message);
     }
 }
 
