@@ -4,7 +4,7 @@
   "description": "NCCU Cloud Native Project Medu Backend",
   "main": "app.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
