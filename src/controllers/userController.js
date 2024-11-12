@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
         if(error.name === 'APIError'){
             return res.status(error.statusCode).json({ message: error.message.trim() });
         }
-        return res.status(500).json({ message: message.trim() });
+        return res.status(500).json({ message: error.message.trim() });
     }
 };
 
