@@ -1,31 +1,19 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const userService = require('../services/userService');
 
 // register
 exports.register = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, nickname, birthDate, gender } = req.body;
+        const userData = { username, password, nickname, birthDate, gender };
 
-        // cheack username or password is empty
-        if (!username?.trim() || !password?.trim()) {
-            return res
-                .status(400)
-                .json({ message: 'required username or password' });
-        }
-
-        // check user exists
-        let user = await User.findOne({ username });
-        if (user) {
-            return res.status(400).json({ message: 'User is existed' });
-        }
-
-        // create user
-        user = new User({ username, password });
-        await user.save();
+        await userService.register(userData);
 
         res.status(201).json({ message: 'register success' });
     } catch (error) {
-        res.status(500).json({ message: 'server error' });
+        if(error.name === 'APIError'){
+            return res.status(error.statusCode).json({ message: error.message.trim() });
+        }
+        return res.status(500).json({ message: error.message.trim() });
     }
 };
 
@@ -33,26 +21,15 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { username, password } = req.body;
-        // check user exists
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res
-                .status(400)
-                .json({ message: 'User or password is not correct' });
-        }
-        // check password
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-            return res
-                .status(400)
-                .json({ message: 'User or password is not correct' });
-        }
-        // Gen JWT
-        const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-            expiresIn: '1h', // 1 hour expires
-        });
+
+        const token = await userService.login(username, password);
+
         res.json({ token });
     } catch (error) {
-        res.status(500).json({ message: 'server error' });
+        if(error.name === "APIError") {
+            return res.status(error.statusCode).json({ message: error.message.trim() });
+        }
+        // console.error(error); // 方便調試
+        res.status(500).json({ message: error.message.trim() });
     }
 };
