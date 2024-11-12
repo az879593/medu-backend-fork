@@ -67,4 +67,53 @@ describe('User Controller', () => {
         });
         
     });
+
+    describe('login', () => {
+        it('should return token when login is successful', async () => {
+            const mockToken = 'fake-jwt-token';
+            userService.login.mockResolvedValue(mockToken);
+
+            const response = await request(app)
+                .post('/login')
+                .send({
+                    username: 'testuser',
+                    password: 'password123'
+                });
+
+            expect(response.status).toBe(200);
+            expect(response.body.token).toBe(mockToken);
+        });
+
+        it('should return custom error when APIError is thrown in login', async () => {
+            userService.login.mockRejectedValue({
+                name: 'APIError',
+                statusCode: 401,
+                message: 'Invalid credentials'
+            });
+
+            const response = await request(app)
+                .post('/login')
+                .send({
+                    username: 'testuser',
+                    password: 'wrongpassword'
+                });
+
+            expect(response.status).toBe(401);
+            expect(response.body.message).toBe('Invalid credentials');
+        });
+
+        it('should return 500 when an unexpected error occurs in login', async () => {
+            userService.login.mockRejectedValue(new Error('Unexpected error'));
+
+            const response = await request(app)
+                .post('/login')
+                .send({
+                    username: 'testuser',
+                    password: 'password123'
+                });
+
+            expect(response.status).toBe(500);
+            expect(response.body.message).toBe('Unexpected error');
+        });
+    });
 });
