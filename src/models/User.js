@@ -77,20 +77,6 @@ const UserSchema = new mongoose.Schema({
                 default: 'township',
             },
         },
-        interactions: {
-            likedUsers: {
-                type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-                default: []
-            },
-            dislikedUsers: {
-                type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-                default: []
-            },
-            matches: {
-                type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-                default: []
-            }
-        }
     },
     username: {
         type: String,
