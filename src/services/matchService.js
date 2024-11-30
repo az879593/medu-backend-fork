@@ -9,11 +9,8 @@ exports.updateUserMatchStatus = async (fromUserId, toUserId, status) => {
         throw new APIError(400, '不能對自己進行操作');
     }
 
-    const fromUserObjectId = mongoose.Types.ObjectId(fromUserId);
-    const toUserObjectId = mongoose.Types.ObjectId(toUserId);
-
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const fromUserObjectId = mongoose.Types.ObjectId.createFromHexString(fromUserId);
+    const toUserObjectId = mongoose.Types.ObjectId.createFromHexString(toUserId);
 
     try {
         const fromUser = await userService.getUserById(fromUserObjectId);
@@ -28,30 +25,27 @@ exports.updateUserMatchStatus = async (fromUserId, toUserId, status) => {
                 { $and: [{ userAId: fromUserObjectId }, { userBId: toUserObjectId }] },
                 { $and: [{ userAId: toUserObjectId }, { userBId: fromUserObjectId }] },
             ],
-        }).session(session);
+        });
 
         if (match) {
             if (match.userAId.equals(fromUserObjectId)) {
-                match.userAStatus = status;
+                match.matchStatus.userAtoBstatus = status;
             } else if (match.userBId.equals(fromUserObjectId)) {
-                match.userBStatus = status;
+                match.matchStatus.userBtoAstatus = status;
             }
         } else {
             match = new Match({
                 userAId: fromUserObjectId,
                 userBId: toUserObjectId,
-                userAStatus: status,
-                userBStatus: 'pending',
+                matchStatus: {
+                    userAtoBstatus: status,
+                    userBtoAstatus: "pending"
+                }
             });
         }
 
-        await match.save({ session });
-
-        await session.commitTransaction();
-        session.endSession();
+        await match.save();
     } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
         throw error;
     }
 }; 
@@ -69,8 +63,18 @@ exports.getFriendListByUserId = async (userId) => {
                 { userBId: userId }
             ]
         }).lean();
+        
+        let friendIdList = new Set();
+        
+        friendList.forEach((element) => {
+            if (element.userAId == userId) {
+                friendIdList.add(element.userBId)
+            } else {
+                friendIdList.add(element.userAId)
+            }
+        });
 
-        return friendList;
+        return Array.from(friendIdList);
         
     } catch (error) {
         console.error("Error fetching matches:", error);
@@ -79,7 +83,7 @@ exports.getFriendListByUserId = async (userId) => {
 };
 
 exports.getMatchCardByUserId = async (userId) => {
-    const userObjectId = mongoose.Types.ObjectId(userId);
+    const userObjectId = mongoose.Types.ObjectId.createFromHexString(userId);
     const checkUserSet = new Set();
 
     try {
@@ -110,7 +114,7 @@ exports.getMatchCardByUserId = async (userId) => {
             }
         }
 
-        return randomUser;
+        return randomUser.profile;
     } catch (error) {
         console.error("Error fetching match cards:", error);
         throw new Error("Failed to fetch match cards");
