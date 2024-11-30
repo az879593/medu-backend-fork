@@ -55,12 +55,12 @@ const UserSchema = new mongoose.Schema({
         location: {
             county: {
                 type: String,
-                required: true,
+                // required: true,
                 enum: Object.keys(COUNTY_TOWNSHIPS)  // 限制只能使用定義的縣市
             },
             township: {
                 type: String,
-                required: true,
+                // required: true,
                 validate: {
                     validator: function(township) {
                         return COUNTY_TOWNSHIPS[this.profile.location.county]?.includes(township);
