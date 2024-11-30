@@ -1,5 +1,6 @@
 // controllers/matchController.js
 const matchService = require('../services/matchService');
+const APIError = require('../errors/APIError');
 
 exports.likeUser = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ exports.likeUser = async (req, res) => {
         if(error instanceof APIError){
             res.status(error.statusCode).json({ message: error.message });
         } else {
-            res.status(500).json({ message: '伺服器錯誤' });
+            res.status(500).json({ message: error.message });
         }
     }
 };
@@ -22,7 +23,7 @@ exports.dislikeUser = async (req, res) => {
         if(error instanceof APIError){
             res.status(error.statusCode).json({ message: error.message });
         } else {
-            res.status(500).json({ message: '伺服器錯誤' });
+            res.status(500).json({ message: error.message });
         }
     }
 };
@@ -35,7 +36,7 @@ exports.getFriendListByUserId = async (req, res) => {
         if(error instanceof APIError){
             res.status(error.statusCode).json({ message: error.message });
         } else {
-            res.status(500).json({ message: '伺服器錯誤' });
+            res.status(500).json({ message: error.message });
         }
     }
 }
@@ -48,7 +49,7 @@ exports.getMatchCardByUserId = async (req, res) => {
         if(error instanceof APIError){
             res.status(error.statusCode).json({ message: error.message });
         } else {
-            res.status(500).json({ message: '伺服器錯誤' });
+            res.status(500).json({ message: error.message });
         }
     }
 }
