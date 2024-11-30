@@ -1,27 +1,21 @@
 const mongoose = require('mongoose');
 
 const MatchSchema = new mongoose.Schema({
-    usernameA: {
-        type: String,
+    userAId: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true,
-        trim: true,
-        minlength: 3,
-        maxlength: 30,
     },
 
-    usernameB: {
-        type: String,
+    userBId: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true,
-        trim: true,
-        minlength: 3,
-        maxlength: 30,
     },
 
-    matchStatus: [{
-        userAtoBstatus : {type: String, enum: ['reject', 'accept', 'pending']},
-        userBtoAstatus : {type: String, enum: ['reject', 'accept', 'pending']}
-    }]
+    matchStatus: {
+        userAtoBstatus : {type: String, enum: ['dislike', 'like', 'pending']},
+        userBtoAstatus : {type: String, enum: ['dislike', 'like', 'pending']}
+    }
 
-});
+}, { timestamps: true });
+
+module.exports = mongoose.model('Match', MatchSchema);
