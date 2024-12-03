@@ -16,7 +16,7 @@ exports.sendMessage = async (req, res) => {
 
 exports.getAllMessageHistory = async (req, res) => {
     try {
-        const messageHistory = await messageService.getAllMessageHistoryByUserId(req.user.userId, req.body.targetUserId);
+        const messageHistory = await messageService.getAllMessageHistoryByUserId(req.user.userId, req.params.targetUserId);
         res.status(200).json({ messageHistory: messageHistory || [] });
     } catch(error) {
         if(error instanceof APIError){
@@ -29,7 +29,7 @@ exports.getAllMessageHistory = async (req, res) => {
 
 exports.getLatestMessage = async (req, res) => {
     try {
-        const latestMessage = await messageService.getLatestMessage(req.user.userId, req.body.targetUserId);
+        const latestMessage = await messageService.getLatestMessage(req.user.userId, req.params.targetUserId);
         res.status(200).json({ latestMessage: latestMessage });
     } catch(error) {
         if(error instanceof APIError){

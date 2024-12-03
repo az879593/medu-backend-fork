@@ -5,7 +5,7 @@ const messageController = require('../controllers/messageController');
 const auth = require('../middlewares/authenticationMiddleware');
 
 // router.post('/send', auth, messageController.sendMessage);
-router.get('/messagehistory', auth, messageController.getAllMessageHistory);
-router.get('/latestmessage', auth, messageController.getLatestMessage);
+router.get('/messagehistory/:targetUserId', auth, messageController.getAllMessageHistory);
+router.get('/latestmessage/:targetUserId', auth, messageController.getLatestMessage);
 
 module.exports = router;
