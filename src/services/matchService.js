@@ -121,3 +121,36 @@ exports.getMatchCardByUserId = async (userId) => {
     } 
 };
 
+exports.checkFriendship = async (userAId, userBId) => {
+    if (userAId === userBId) {
+        throw new APIError(400, '不能對自己進行操作');
+    }
+
+    const userAObjectId = mongoose.Types.ObjectId.createFromHexString(userAId);
+    const userBObjectId = mongoose.Types.ObjectId.createFromHexString(userBId);
+
+    try {
+        const userA = await userService.getUserById(userAObjectId);
+        const userB = await userService.getUserById(userBObjectId);
+
+        if (!userA || !userB) {
+            throw new APIError(404, '用戶不存在');
+        }
+
+        const match = await Match.findOne({
+            $or: [
+                { userAId: userAObjectId, userBId: userBObjectId },  
+                { userAId: userBObjectId, userBId: userAObjectId }   
+            ]
+        });
+
+        if (!match) {
+            return false;
+        }
+
+        return (match.matchStatus.userAtoBstatus === "like" && match.matchStatus.userBtoAstatus === "like") ? true : false;
+
+    } catch (error) {
+        throw error;
+    }
+}
