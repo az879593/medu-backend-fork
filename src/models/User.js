@@ -91,15 +91,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 6,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
+}, { timestamps: true });
 
 // 密碼加密
 UserSchema.pre('save', async function (next) {
