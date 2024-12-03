@@ -4,7 +4,7 @@ const APIError = require('../errors/APIError');
 
 exports.likeUser = async (req, res) => {
     try {
-        await matchService.updateUserMatchStatus(req.user.userId, req.params.targetUserId, "like");
+        await matchService.updateUserMatchStatus(req.user.userId, req.body.targetUserId, "like");
         res.json({ message: '已喜歡該用戶' });
     } catch (error) {
         if(error instanceof APIError){
@@ -17,7 +17,7 @@ exports.likeUser = async (req, res) => {
 
 exports.dislikeUser = async (req, res) => {
     try {
-        await matchService.updateUserMatchStatus(req.user.userId, req.params.targetUserId, "dislike");
+        await matchService.updateUserMatchStatus(req.user.userId, req.body.targetUserId, "dislike");
         res.json({ message: '已不喜歡該用戶' });
     } catch (error) {
         if(error instanceof APIError){
