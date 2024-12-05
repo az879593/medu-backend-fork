@@ -5,16 +5,45 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const auth = require('../middlewares/authenticationMiddleware');
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, '../uploads/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname);
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        db(null, false);
+    }
+};
+
+const upload = multer({
+    storage: storage, 
+    // limits: {
+    //     fileSize: 1024 * 1024 * 5
+    // },
+    fileFilter: fileFilter
+});
+
 // register route
 router.post('/register', userController.register);
 
 // login route
 router.post('/login', userController.login);
 
-// Use JWT profile
-// It can improve in the UserController.js
-router.get('/profile', auth, (req, res) => {
-    res.json({ message: 'Is protected token', userId: req.user.userId });
-});
+// upload profile picture route
+router.post('/upload', upload.single('profilePicture'), auth, userController.uploadPicture);
+
+// get user profile picture
+router.get('/profilepicture/:targetUserId', userController.getProfilePicture);
+
+// get user nickname
+router.get('/nickname/:targetUserId', userController.getUserNickname);
 
 module.exports = router;

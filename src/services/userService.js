@@ -2,6 +2,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const APIError = require('../errors/APIError');
+const mongoose = require('mongoose');
 
 exports.register = async (userData) => {
     const { username, password, nickname, birthDate, gender } = userData;
@@ -78,7 +79,8 @@ exports.login = async (username, password) => {
 }
 
 exports.getUserById = async (userId) => {
-    const user = await User.findById(userId);
+    const userObjectId = mongoose.Types.ObjectId.createFromHexString(fromUserId);
+    const user = await User.findById(userObjectId);
     if (!user) {
         throw new APIError(400, "用戶不存在");
     }
@@ -103,4 +105,37 @@ exports.getRandomUserExcludeCollection = async (excludeCollection) => {
     ]);
 
     return randomUser.length > 0 ? randomUser[0] : null;
+}
+
+exports.getUserNicknameById = async (targetUserId) => {
+    const userObjectId = mongoose.Types.ObjectId.createFromHexString(targetUserId);
+    const user = await User.findById(userObjectId);
+    if (!user) {
+        throw new APIError(400, "用戶不存在");
+    }
+    return user.profile.nickname;
+}
+
+exports.getProfilePicturePathByUserId = async (targetUserId) => {
+    const userObjectId = mongoose.Types.ObjectId.createFromHexString(targetUserId);
+    const user = await User.findById(userObjectId);
+    if (!user) {
+        throw new APIError(400, "用戶不存在");
+    }
+    return user.profile.profilePicturePath;
+}
+
+exports.updatePicturePath = async (path, userId) => {
+    const userObjectId = mongoose.Types.ObjectId.createFromHexString(userId);
+    const user = await User.findById(userObjectId);
+    if (!user) {
+        throw new APIError(400, "用戶不存在");
+    }
+    user.profile.profilePicturePath = path;
+
+    try {
+        user.save();
+    } catch (error) {
+        throw new APIError(400, "user profile picture upload failed");
+    }
 }

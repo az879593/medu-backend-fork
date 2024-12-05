@@ -52,6 +52,9 @@ const UserSchema = new mongoose.Schema({
             // required: true,
             maxlength: 10000,
         },
+        profilePicturePath: {
+            type: String,
+        },
         location: {
             county: {
                 type: String,
