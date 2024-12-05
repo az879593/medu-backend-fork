@@ -79,7 +79,7 @@ exports.login = async (username, password) => {
 }
 
 exports.getUserById = async (userId) => {
-    const userObjectId = mongoose.Types.ObjectId.createFromHexString(fromUserId);
+    const userObjectId = userId instanceof mongoose.Types.ObjectId ? userId : mongoose.Types.ObjectId.createFromHexString(userId);
     const user = await User.findById(userObjectId);
     if (!user) {
         throw new APIError(400, "用戶不存在");
