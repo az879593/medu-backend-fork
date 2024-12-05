@@ -12,7 +12,21 @@ NCCU Cloud Native Project Medu Backend
 ```json
 {
   "username": "string",
-  "password": "string"
+  "password": "string",
+  "nickname": "string", 
+  "birthDate": "Date",
+  "gender": "String"
+}
+```
+
+**範例請求 Body:**
+```json
+{
+  "username" : "testuser",
+  "password" : "testpassword",
+  "nickname" : "testnickname",
+  "birthDate" : "2016-05-18",
+  "gender" : "male"
 }
 ```
 
@@ -71,6 +85,7 @@ NCCU Cloud Native Project Medu Backend
 喜歡 : **POST** `/api/match/like/:targetUserId`
 
 不喜歡 : **POST** `/api/match/dislike/:targetUserId`
+
 ```json
 {
   "targetUserId": "String"
