@@ -33,3 +33,31 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: error.message.trim() });
     }
 };
+
+exports.uploadPicture = async (req, res) => {
+    console.log(req.file);
+    try {
+        const profilePicturePath = await userService.updatePicturePath(req.file.path, req.user.userId);
+        res.json({ profilePicturePath: profilePicturePath });
+    } catch (error) {
+        res.status(500).json({ message: error.message.trim() });
+    }
+}
+
+exports.getProfilePicture = async (req, res) => {
+    try {
+        const profilePicturePath = await userService.getProfilePicturePathByUserId(req.params.targetUserId);
+        res.json({ profilePicturePath: profilePicturePath});
+    } catch (error) {
+        res.status(500).json({ message: error.message.trim() });
+    }
+}
+
+exports.getUserNickname = async (req, res) => {
+    try {
+        const nickname = await userService.getUserNicknameById(req.params.targetUserId);
+        res.json({ nickname: nickname});
+    } catch (error) {
+        res.status(500).json({ message: error.message.trim() });
+    }
+}
